@@ -29,4 +29,21 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+.flexAlign{
+  height: 99%;
+  width: 99%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.normal-button{
+  width: 200px;
+  border-radius: 10px;
+  background-color:crimson;
+  border:none;
+  padding:10px;
+  color:white;
+  font-size: 1.15em;
+}
 </style>

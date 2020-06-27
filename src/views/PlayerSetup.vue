@@ -1,6 +1,6 @@
 <template>
     <div>
-        <playerSelection/>
+        <playerSelection @newdata="handleData($event)" />
     </div>
 </template>
 
@@ -11,18 +11,24 @@ export default {
     name: 'PlayerSetup',
     components:{
         playerSelection
+    },
+    data(){
+        return{
+            playerInfo:{
+                player1:"",
+                player2:""
+            }
+        }
+    },
+    methods: {
+        handleData: function(e) {
+            [this.playerInfo.player1, this.playerInfo.player2] = e;
+        }
     }
 }
 </script>
 
 
 <style scoped>
-.flexAlign{
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 </style>
