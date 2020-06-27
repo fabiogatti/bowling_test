@@ -1,4 +1,5 @@
 # bowling_test
+This is a project that mimics a 2d bowling game, made as a test for the front-end position at TPG.
 
 ## Project setup
 ```
