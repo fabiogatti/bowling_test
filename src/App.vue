@@ -37,13 +37,16 @@
   align-items: center;
   justify-content: center;
 }
+
+
 .normal-button{
   width: 200px;
-  border-radius: 10px;
+  border-radius: 15px;
   background-color:crimson;
   border:none;
   padding:10px;
   color:white;
   font-size: 1.15em;
+  transition: all 0.5 ease-in-out;
 }
 </style>

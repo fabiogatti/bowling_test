@@ -1,6 +1,6 @@
 <template>
     <div>
-        <playerSelection @newdata="handleData($event)" />
+        <playerSelection />
     </div>
 </template>
 
@@ -18,11 +18,6 @@ export default {
                 player1:"",
                 player2:""
             }
-        }
-    },
-    methods: {
-        handleData: function(e) {
-            [this.playerInfo.player1, this.playerInfo.player2] = e;
         }
     }
 }

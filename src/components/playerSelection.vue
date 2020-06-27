@@ -8,7 +8,9 @@
             <p><span>Player 2:</span> {{ formData.player2 }}</p>
             <input v-model="formData.player2" placeholder="Name">
             <div class="space">
-                <router-link to="/" tag="button" class="normal-button">Go!</router-link>
+                <router-link :to="{ name:'Game', params: { playerData: this.formData } }" tag="button" class="normal-button" v-bind:disabled="smallLength()" v-bind:class="{ disabled : smallLength() }">
+                    Go!
+                </router-link>
             </div>
             <div class="space">
                 <router-link to="/" tag="button" class="normal-button">Back</router-link>
@@ -28,14 +30,14 @@ export default {
             }
         }
     },
-    watch: {
-        formData: {
-              handler: function() {
-                  this.$emit('newdata', [this.formData.player1, this.formData.player2]);
-          },
-          deep: true
+    methods:{
+        smallLength: function(){
+            if(this.formData.player1.length<3 || this.formData.player2.length<3)
+                return true;
+            else
+                return false;
         }
-      }
+    }
 }
 </script>
 
@@ -72,5 +74,8 @@ input::placeholder {
 .space{
     width: 100%;
     margin-top:1.5em;
+}
+.disabled{
+    background-color:rgba(220, 20, 60,0.25);
 }
 </style>
