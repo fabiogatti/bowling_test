@@ -107,7 +107,7 @@ export default {
 
 
 .slide-enter-active {
-  transition: all 1s ease;
+  transition: all 0.5s ease;
   opacity: 0;
 }
 .slide-leave-active {

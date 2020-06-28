@@ -1,14 +1,43 @@
 <template>
   <div class="flexColumn">
     <h1>Player turn: <span v-bind:class="[ turn==0 ? 'color1' : 'color2']">{{ turn==0 ? this.playerData.player1 : this.playerData.player2 }}</span></h1>
+    <h1>Last Score: {{ lastScore }}</h1>
+    <h1>Turn: {{ Math.ceil((this.turnCounter+1)/2) }}</h1>
+    <scoreBox :data='scoreboard1[1]' :playerNumber='0' :turnNumber=1 />
+    
+    <div class="closeDiv">
+      <transition name="fade">
+        <div class="innerClose" v-if="close">
+          <p>End game?</p>
+          <router-link to="/" tag="button" class="yesClose">Yes</router-link>
+          <a @click="close=false" class="noClose">No</a>
+        </div>
+      </transition>
+      <img src="../assets/close.png" class="closeImg" alt="" @click="close=!close">
+    </div>
     <p>{{ subTurn }}</p>
     <p>{{ turnCounter }}</p>
     <div class="flexRow">
       <board class="board" :begin="begin" :pinList="pinList" :turn="turn" :strike="strike"/>
       <div class="flexColumnButton">
-        <button class="btn btn1" @click="beginTurn(1)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento seguro<i class="fas fa-hard-hat"></i></button>
-        <button class="btn btn2" @click="beginTurn(2)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento aleatorio<i class="fas fa-random"></i></button>
-        <button class="btn btn3" @click="beginTurn(3)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento arriesgado<i class="fas fa-fire"></i></button>
+        <div class="buttonDiv">
+          <div class="tooltip">
+            <p>Tiro random que se centra en valores centrales</p>
+          </div>
+          <button class="btn btn1" @click="beginTurn(1)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento seguro<i class="fas fa-hard-hat"></i></button>
+        </div>
+        <div class="buttonDiv">
+          <div class="tooltip">
+            <p>Tiro totalmente random</p>
+          </div>
+          <button class="btn btn2" @click="beginTurn(2)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento aleatorio<i class="fas fa-random"></i></button>
+        </div>
+        <div class="buttonDiv">
+          <div class="tooltip">
+            <p>Tiro random que se centra en valores altos y bajos</p>
+          </div>
+          <button class="btn btn3" @click="beginTurn(3)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento arriesgado<i class="fas fa-fire"></i></button>
+        </div>
       </div>
     </div>
 
@@ -18,12 +47,14 @@
 
 <script>
 import board from '@/components/board.vue'
+import scoreBox from '@/components/scoreBox.vue'
 import random from 'random'
 
 export default {
     name:"Game",
     components:{
-      board
+      board,
+      scoreBox
     },
     data(){
       return{
@@ -34,15 +65,31 @@ export default {
         subTurn:0,
         turnCounter:0,
         strike:false,
+        lastScore:0,
+        close:false,
+        scoreboard1:{},
+        scoreboard2:{},
         pinList:[]
       }
     },
     created() {
       
       for (let i = 1; i < 11; i++) {
-        this.pinList.push({"name":"pin"+i,show:true});
+        this.pinList.push({"name":"pin"+i,show:true})
       }
-      this.playerData = this.$route.params.playerData;
+
+      for (let i = 1; i < 11; i++) {
+        if(i!=10){
+          this.scoreboard1[i] = { total:"",values:{value1:"", value2:""} }
+          this.scoreboard2[i] = { total:"",values:{value1:"", value2:""} }
+        }
+        else{
+          this.scoreboard1[i] = { total:"",values:{value1:"", value2:"", value3:""} }
+          this.scoreboard2[i] = { total:"",values:{value1:"", value2:"", value3:""} }
+        }
+      }
+
+      this.playerData = this.$route.params.playerData
     },
     methods:{
       //Normalizes the random function so the values get inside of defined values (min-max)
@@ -91,6 +138,7 @@ export default {
         
         
         if(random==1 && temp.length==1){
+          this.lastScore = random
           removed.push(temp[0])
           temp = temp.filter(elem => elem!=temp[random2])
           resolve = true
@@ -104,6 +152,7 @@ export default {
           if(random2==temp.length){
             resolve = true
           }
+          this.lastScore = random
           console.log(temp.length)
           for (let index = 0; index < random; index++) {
             console.log('Temp before: '+temp[random2].name+" random: "+random2+" index: "+index)
@@ -185,6 +234,7 @@ export default {
 }
   h1{
     width: 100%;
+    margin: 0.25em 0;
   }
   .color1{
     color:crimson;
@@ -242,5 +292,82 @@ export default {
   }
   .fas{
     margin-left: 5px;
+  }
+
+  .closeDiv{
+    position: absolute;
+    right: 10px;
+    top:10px;
+    display: flex;
+  }
+  .closeImg{
+    height: 2em;
+    display: inline;
+    cursor: pointer;
+  }
+  .innerClose{
+    display: inline;
+    margin-right: 10px;
+  }
+  .innerClose *{
+    display: inline;
+    padding: 7.5px;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  .innerClose p:first-child{
+    cursor:default;
+  }
+  .yesClose{
+    cursor: pointer;
+    color:rgb(238, 42, 81);
+    border: none;
+    background-color: transparent;
+  }
+  .noClose{
+    cursor: pointer;
+    color:darkgreen;
+  }
+  .fade-enter-active {
+  transition: all .3s ease-in;
+  }
+  .fade-leave-active {
+    transition: all .3s ease-out;
+  }
+  .fade-enter, .fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(25px);
+    opacity: 0;
+  }
+  .buttonDiv{
+    position: relative;
+    margin:15px 0px;
+    width: 100%;
+  }
+  .tooltip{
+    display: inline-block;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    left: 51%;
+    transform-origin: 50% 100%;
+    transform: scaleY(0) translateX(-50%);
+    transition: all 0.25s ease-in-out;
+    bottom:5em;
+    background-color: rgba(47, 79, 79,0.75);
+    color: white;
+    padding:0 5px;
+    border-radius: 25px;
+  }
+  .buttonDiv:hover .tooltip{
+    opacity: 1;
+    transform: scaleY(1) translateX(-50%);
+    transform-origin: 50% 100%;
+    transition-delay:0.5s;
+  }
+  @media (max-width: 1700px) {
+    .tooltip{
+      bottom:6em;
+    }
   }
 </style>
