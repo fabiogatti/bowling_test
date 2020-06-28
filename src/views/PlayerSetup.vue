@@ -17,7 +17,8 @@ export default {
             playerInfo:{
                 player1:"",
                 player2:""
-            }
+            },
+            pinList: []
         }
     }
 }
