@@ -1,17 +1,13 @@
 <template>
   <div class="table">
+    <div class="strikeDiv">
+        <img src="../assets/strike.gif" alt="" class="strikeGif" v-if="strike">
+    </div>
     <div class="pins">
-        <!--<img src="../assets/bowling_pin.png" alt="" id="pin10" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin9" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin8" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin7" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin6" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin5" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin4" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin3" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin2" class="pin">
-        <img src="../assets/bowling_pin.png" alt="" id="pin1" class="pin">-->
-        <img src="../assets/bowling_pin.png" alt="" class="pin" v-for="item in pinList" :key="item.name" v-bind:class="item.name" v-bind:style="{'grid-area':item.name}">
+        <!--<img src="../assets/bowling_pin.png" alt="" class="pin" v-for="item in pinList" :key="item.name" v-bind:class="item.name" v-bind:style="{'grid-area':item.name}">-->
+        <div v-for="item in pinList" :key="item.name" v-bind:class="item.name" v-bind:style="{'grid-area':item.name}">
+            <img src="../assets/bowling_pin.png" alt=""  class="pin" v-if="item.show">
+        </div>
     </div>
     <transition name="slide">
         <div class="ball" v-if="!begin" v-bind:class="[ turn==0 ? 'ball1' : 'ball2']"></div>
@@ -25,7 +21,7 @@
 <script>
 export default {
     name:"board",
-    props: ['begin', 'pinList', 'turn'],
+    props: ['begin', 'pinList', 'turn','strike'],
     data(){
         return{
             
@@ -95,25 +91,17 @@ export default {
     height: 3em;
     width: 3em;
 }
-/*#pin10{
-    grid-area: pin10;
+
+.strikeDiv{
+    top:22.5%;
+    left:5%;
+    position: absolute;
 }
-#pin9{
-    grid-area: pin10;
+
+.strikeGif{
+    width: 20em;
+    height: 20em;
 }
-#pin8{
-    grid-area: pin10;
-}
-#pin7{
-    grid-area: pin10;
-}
-#pin6{
-    grid-area: pin10;
-}
-#pin10{
-    grid-area: pin10;
-}
-*/
 
 
 

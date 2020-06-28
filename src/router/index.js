@@ -21,7 +21,7 @@ Vue.use(VueRouter)
     component: PlayerSetup
   },
   {
-    path: '/game/:id',
+    path: '/game/:playerData',
     name: 'Game',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
