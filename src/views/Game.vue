@@ -2,9 +2,10 @@
   <div class="flexColumn">
     <h1>Player turn: <span v-bind:class="[ turn==0 ? 'color1' : 'color2']">{{ turn==0 ? this.playerData.player1 : this.playerData.player2 }}</span></h1>
     <h1>Last Score: {{ lastScore }}</h1>
-    <h1>Turn: {{ Math.ceil((this.turnCounter+1)/2) }}</h1>
-    <scoreBox :data='scoreboard1[1]' :playerNumber='0' :turnNumber=1 />
-    
+    <h1>Turn: {{ Math.ceil((this.turnCounter)/2) }}</h1>
+
+    <scoreBoard class="board1" :propData="scoreboard1" :playerNumber='0' :playerName="this.playerData.player1" v-bind:class="[ turn==1 ? 'disabled' : '' ]" />
+
     <div class="closeDiv">
       <transition name="fade">
         <div class="innerClose" v-if="close">
@@ -13,33 +14,44 @@
           <a @click="close=false" class="noClose">No</a>
         </div>
       </transition>
-      <img src="../assets/close.png" class="closeImg" alt="" @click="close=!close">
+      <!--<img src="../assets/close.png" class="closeImg" alt="" @click="close=!close">-->
+      <i class="fas fa-times close" @click="close=!close"></i>
     </div>
-    <p>{{ subTurn }}</p>
-    <p>{{ turnCounter }}</p>
+    <!--<div class="dev">
+      <p>SubTurn: {{ subTurn }}</p>
+      <p>turnCounter: {{ turnCounter }}</p>
+      <p>begin: {{ begin }}</p>
+      <p>Turn: {{ turn }}</p>
+      <p>Total1: {{ total1 }}</p>
+      <p>Total2: {{ total2 }}</p>
+    </div>-->
+    
     <div class="flexRow">
       <board class="board" :begin="begin" :pinList="pinList" :turn="turn" :strike="strike"/>
       <div class="flexColumnButton">
         <div class="buttonDiv">
           <div class="tooltip">
-            <p>Tiro random que se centra en valores centrales</p>
+            <p>Random shot with bias thorwards the middle </p>
           </div>
-          <button class="btn btn1" @click="beginTurn(1)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento seguro<i class="fas fa-hard-hat"></i></button>
+          <button class="btn btn1" @click="beginTurn(1)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Safe shot<i class="fas fa-hard-hat"></i></button>
         </div>
         <div class="buttonDiv">
           <div class="tooltip">
-            <p>Tiro totalmente random</p>
+            <p>Totally random shot</p>
           </div>
-          <button class="btn btn2" @click="beginTurn(2)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento aleatorio<i class="fas fa-random"></i></button>
+          <button class="btn btn2" @click="beginTurn(2)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Random shot<i class="fas fa-random"></i></button>
         </div>
         <div class="buttonDiv">
           <div class="tooltip">
-            <p>Tiro random que se centra en valores altos y bajos</p>
+            <p>Random shot biased thorwards the low and high end</p>
           </div>
-          <button class="btn btn3" @click="beginTurn(3)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Lanzamiento arriesgado<i class="fas fa-fire"></i></button>
+          <button class="btn btn3" @click="beginTurn(3)" v-bind:disabled="begin" v-bind:class="[begin?'disabled':'']">Risky shot<i class="fas fa-fire"></i></button>
         </div>
       </div>
     </div>
+
+ 
+    <scoreBoard class="board2" :propData="scoreboard2" :playerNumber='1' :playerName="this.playerData.player2" v-bind:class="[ turn==0 ? 'disabled' : '' ]" />
 
     <!--<p>{{ playerData }}</p>-->
   </div>
@@ -47,28 +59,31 @@
 
 <script>
 import board from '@/components/board.vue'
-import scoreBox from '@/components/scoreBox.vue'
+import scoreBoard from '@/components/scoreBoard.vue'
 import random from 'random'
 
 export default {
     name:"Game",
     components:{
       board,
-      scoreBox
+      //scoreBoard
+      scoreBoard
     },
     data(){
       return{
-        playerData:{},
+        playerData:{ player1:"", player2:"" },
         begin:false,
         clickType:0,
         turn:0,
         subTurn:0,
-        turnCounter:0,
+        turnCounter:1,
         strike:false,
         lastScore:0,
         close:false,
         scoreboard1:{},
         scoreboard2:{},
+        total1:0,
+        total2:0,
         pinList:[]
       }
     },
@@ -80,12 +95,12 @@ export default {
 
       for (let i = 1; i < 11; i++) {
         if(i!=10){
-          this.scoreboard1[i] = { total:"",values:{value1:"", value2:""} }
-          this.scoreboard2[i] = { total:"",values:{value1:"", value2:""} }
+          this.scoreboard1[i] = { total:"",id:i,values:{value1:"", value2:""} }
+          this.scoreboard2[i] = { total:"",id:i,values:{value1:"", value2:""} }
         }
         else{
-          this.scoreboard1[i] = { total:"",values:{value1:"", value2:"", value3:""} }
-          this.scoreboard2[i] = { total:"",values:{value1:"", value2:"", value3:""} }
+          this.scoreboard1[i] = { total:"",id:i,values:{value1:"", value2:"", value3:""} }
+          this.scoreboard2[i] = { total:"",id:i,values:{value1:"", value2:"", value3:""} }
         }
       }
 
@@ -133,8 +148,6 @@ export default {
           random = this.getRandomSkewedEdges(0,temp.length)
         var random2 = random;
 
-        console.log("Temp before:" + temp)
-        console.log("Random: "+random)
         
         
         if(random==1 && temp.length==1){
@@ -153,9 +166,9 @@ export default {
             resolve = true
           }
           this.lastScore = random
-          console.log(temp.length)
+          //console.log(temp.length)
           for (let index = 0; index < random; index++) {
-            console.log('Temp before: '+temp[random2].name+" random: "+random2+" index: "+index)
+            //console.log('Temp before: '+temp[random2].name+" random: "+random2+" index: "+index)
             removed.push(temp[random2])
             
             temp = temp.filter(elem => elem!=temp[random2])
@@ -170,59 +183,127 @@ export default {
               random2 = temp.length-1
           }
         }
-        /*console.log("Removed: "+removed)
-        console.log("Temp after: "+temp)
-        for (let a = 0; a < this.pinList.length; a++) {
-          console.log("Pinlist before "+a+" : "+this.pinList[a].show)
-        }*/
         for (let i = 0; i < removed.length; i++) {
           var x = this.pinList.indexOf(removed[i])
           this.pinList[x].show = false
         }
-        /*for (let a = 0; a < this.pinList.length; a++) {
-          console.log("Pinlist after "+a+" : "+this.pinList[a].show)
-        }*/
-        //console.log("PinList after: "+this.pinList)
         return resolve
       },
+      //Function that controls the variables and the game logic
       beginTurn:function(type){
-        
-        
-        
         this.begin = true
         this.clickType = type
+
+        
+
         setTimeout(() => {
-          var strikeOrSpare = this.randomFunction(type);
-          console.log('Is Strike or spare? '+strikeOrSpare)
-          this.subTurn++
-          if(this.subTurn==2 || strikeOrSpare){
-            if(strikeOrSpare){
-              this.strike = true
-            }
-            if(this.turn==0){
-              this.turn = 1
-              this.subTurn=0
-            }
-            else{
-              this.turn = 0
-              this.subTurn=0
-            }
-            setTimeout(() => {
-              this.begin = false
-              this.clickType = 0
-              this.turnCounter++
-              this.strike = false
-              for (let i = 0; i < this.pinList.length; i++) {
-                this.pinList[i].show = true
-              }
-            }, 2000);
+          var strikeOrSpare = this.randomFunction(type)
+          var actualTurn = Math.ceil((this.turnCounter)/2)
+          //var temp1 = this.scoreboard1
+          console.log("ACTUAL TURN: "+actualTurn)
+          //console.log('Is Strike or spare? '+strikeOrSpare)
+
+          if(actualTurn>=10){
+            console.log("turno10")
+            var win = 0
+            if(this.total1>this.total2)
+              win = this.playerData.player1
+            else
+              win = this.playerData.player2
+            this.$router.push({ name: 'Winner', params: {playerData:this.playerData, winner:win, scoreboard1:this.scoreboard1, scoreboard2:this.scoreboard2 } })
           }
           else{
-            this.begin = false
-            this.clickType = 0
+            if(this.subTurn==0){
+              if(this.turn==0){
+                this.total1 += this.lastScore
+                //window.Vue.$set(temp1[actualTurn]["values"], 'value1', this.lastScore)
+                //Vue.set(temp1[actualTurn]["values"], 'value1', this.lastScore)
+                //this.$set(this.scoreboard1[actualTurn]["values"], 'value1', this.lastScore)
+                
+                
+                if(this.lastScore==0)
+                  this.scoreboard1[actualTurn]["values"].value1 = '-'
+                else if(strikeOrSpare)
+                  this.scoreboard1[actualTurn]["values"].value1 = 'X'
+                else
+                  this.scoreboard1[actualTurn]["values"].value1 = this.lastScore
+                //console.log( "El valor dentro del board cambio a:" + this.scoreboard1[actualTurn]["values"].value1 )
+              }
+              else{
+                this.total2 += this.lastScore
+                //this.$set(this.scoreboard2[actualTurn]["values"], 'value1', this.lastScore)
+                if(this.lastScore==0)
+                  this.scoreboard2[actualTurn]["values"].value1 = '-'
+                else if(strikeOrSpare)
+                  this.scoreboard2[actualTurn]["values"].value1 = 'X'
+                else
+                  this.scoreboard2[actualTurn]["values"].value1 = this.lastScore
+                //console.log( "El valor dentro del board cambio a:" + this.scoreboard2[actualTurn]["values"].value1 )
+              }
+            }else{
+              this.total1 += this.lastScore
+              if(this.turn==0){
+                //this.$set(this.scoreboard1[actualTurn]["values"], 'value2', this.lastScore)
+                if(this.lastScore==0)
+                  this.scoreboard1[actualTurn]["values"].value2 = '-'
+                else if(strikeOrSpare)
+                  this.scoreboard1[actualTurn]["values"].value2 = '/'
+                else
+                  this.scoreboard1[actualTurn]["values"].value2 = this.lastScore
+                //console.log( "El valor dentro del board cambio a:" + this.scoreboard1[actualTurn]["values"].value2 )
+              }
+              else{
+                this.total2 += this.lastScore
+                //this.$set(this.scoreboard2[actualTurn]["values"], 'value2', this.lastScore)
+                if(this.lastScore==0)
+                  this.scoreboard2[actualTurn]["values"].value2 = '-'
+                else if(strikeOrSpare)
+                  this.scoreboard2[actualTurn]["values"].value2 = 'X'
+                else
+                  this.scoreboard2[actualTurn]["values"].value2 = this.lastScore
+                //console.log( "El valor dentro del board cambio a:" + this.scoreboard2[actualTurn]["values"].value2 )
+              }
+            }
+
+            this.subTurn++
+
+            if(this.subTurn==2 || strikeOrSpare){
+              if(strikeOrSpare){
+                this.strike = true
+              }
+              if(this.turn==0){
+                this.turn = 1
+                this.subTurn=0
+              }
+              else{
+                this.turn = 0
+                this.subTurn=0
+              }
+              setTimeout(() => {
+                this.begin = false
+                this.clickType = 0
+                this.turnCounter++
+                this.strike = false
+                for (let i = 0; i < this.pinList.length; i++) {
+                  this.pinList[i].show = true
+                }
+                if(this.turnCounter==21){
+                  var win = 0
+                  if(this.total1>this.total2)
+                    win = this.playerData.player1
+                  else
+                    win = this.playerData.player2
+                  this.$router.push({ name: 'Winner', params: {playerData:this.playerData, winner:win, scoreboard1:this.scoreboard1, scoreboard2:this.scoreboard2 } })
+                }
+              }, 2000);
+            }
+            else{
+              this.begin = false
+              this.clickType = 0
+            }
           }
         }, 1500);
-
+        
       }
     }
 }
@@ -301,9 +382,9 @@ export default {
     display: flex;
   }
   .closeImg{
-    height: 2em;
     display: inline;
     cursor: pointer;
+    height: 2em;
   }
   .innerClose{
     display: inline;
@@ -326,7 +407,7 @@ export default {
   }
   .noClose{
     cursor: pointer;
-    color:darkgreen;
+    color:rgb(0, 156, 0);
   }
   .fade-enter-active {
   transition: all .3s ease-in;
@@ -365,6 +446,29 @@ export default {
     transform-origin: 50% 100%;
     transition-delay:0.5s;
   }
+  .board1{
+    margin-bottom: 1.5em;
+  }
+  .board2{
+    margin-top:1.5em;
+  }
+  .disabled{
+    opacity: 0.55;
+  }
+  .close{
+    cursor: pointer;
+    font-size: 2em;
+  }
+
+
+  .dev{
+    position:absolute;
+    top:0;
+    left:0;
+  }
+
+
+
   @media (max-width: 1700px) {
     .tooltip{
       bottom:6em;

@@ -12,9 +12,6 @@
     <transition name="slide">
         <div class="ball" v-if="!begin" v-bind:class="[ turn==0 ? 'ball1' : 'ball2']"></div>
     </transition>
-        
-    <p>{{ begin }}</p>
-    <p>{{ turn }}</p>
   </div>
 </template>
 
@@ -27,20 +24,15 @@ export default {
             
         }
     },
-    watch: { 
+    /*watch: { 
         begin: function(newVal, oldVal) { // watch it
             if(newVal)  {
-                console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+
+                //console.log('Prop changed: ', newVal, ' | was: ', oldVal)
                 //console.log(Math.random());
             }
         }
-    },
-    created(){
-        /*for (let i = 1; i < 11; i++) {
-            this.pinList.push("pin"+i);
-            
-        }*/
-    }
+    }*/
 }
 </script>
 
@@ -69,7 +61,7 @@ export default {
     background-size: 100%;
 }
 .pins{
-    top:22.5%;
+    top:12.5%;
     left:5%;
     display:grid;
     grid-template-columns: repeat(4,3em);
