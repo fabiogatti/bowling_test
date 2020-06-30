@@ -1,6 +1,6 @@
 <template>
   <div class="boxDiv" v-bind:class="[playerNumber == 0? 'player1':'player2', turnNumber==1 ? 'first' : '' , turnNumber==10 ? 'last' : '' ]">
-        <p class="turn" v-bind:class="[playerNumber == 0? 'player1':'player2']">
+        <p class="turn" v-bind:class="[playerNumber == 0? 'player1Turn':'player2Turn']">
             {{ turnNumber }}
         </p>
         <div class="scoresDiv">
@@ -37,6 +37,14 @@ export default {
     }
     .player2{
         border: 2px solid darkblue;
+    }
+    .player1Turn{
+        border: 2px solid crimson;
+        color: crimson;
+    }
+    .player2Turn{
+        border: 2px solid darkblue;
+        color: darkblue;
     }
     .boxDiv{
         min-width: 90px;

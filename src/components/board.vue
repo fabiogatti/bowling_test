@@ -85,7 +85,7 @@ export default {
 }
 
 .strikeDiv{
-    top:22.5%;
+    top:18.5%;
     left:5%;
     position: absolute;
 }
@@ -99,7 +99,7 @@ export default {
 
 
 .slide-enter-active {
-  transition: all 0.5s ease;
+  transition: all 0.25s ease;
   opacity: 0;
 }
 .slide-leave-active {

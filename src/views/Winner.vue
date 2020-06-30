@@ -50,7 +50,7 @@ export default {
     .flexRow{
         display: flex;
         flex-direction: column;
-        height: 99%;
+        height: auto;
         width: 100%;
         margin-top:100px;
         justify-content: center;

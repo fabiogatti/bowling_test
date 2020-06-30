@@ -15,12 +15,6 @@ export default {
     props:['propData','playerNumber','playerName'],
     components:{
         scoreBox
-    },
-    watch: { 
-        propData: function(newVal, oldVal) { // watch it
-            console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-        },
-        immediate: true, 
     }
 }
 </script>
